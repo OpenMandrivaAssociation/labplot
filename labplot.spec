@@ -8,6 +8,7 @@ URL:		https://edu.kde.org/labplot/
 Source0:	http://download.kde.org/stable/%{name}/%{version}/%{name}-%{version}-kf5.tar.xz
 BuildRequires:	pkgconfig(gsl)
 BuildRequires:	gettext-devel
+BuildRequires:	shared-mime-info
 
 BuildRequires:	cmake(ECM)
 BuildRequires:	cmake(KF5Archive)
