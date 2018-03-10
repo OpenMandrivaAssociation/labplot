@@ -9,7 +9,7 @@ Source0:	http://download.kde.org/stable/%{name}/%{version}/%{name}-%{version}-kf
 BuildRequires:	pkgconfig(gsl)
 BuildRequires:	gettext-devel
 BuildRequires:	shared-mime-info
-
+BuildRequires:	docbook-dtd42-xml
 BuildRequires:	cmake(ECM)
 BuildRequires:	cmake(KF5Archive)
 BuildRequires:	cmake(KF5Completion)
