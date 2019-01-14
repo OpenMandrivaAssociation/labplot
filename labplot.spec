@@ -5,7 +5,7 @@ Release:	1
 License:	GPLv2+
 Group:		Sciences/Other
 URL:		https://edu.kde.org/labplot/
-Source0:	http://download.kde.org/stable/%{name}/%{version}/%{name}-%{version}-kf5.tar.xz
+Source0:	http://download.kde.org/stable/%{name}/%{version}/%{name}-%{version}.tar.xz
 BuildRequires:	pkgconfig(gsl)
 BuildRequires:	gettext-devel
 BuildRequires:	shared-mime-info
