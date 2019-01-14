@@ -1,11 +1,11 @@
 Summary:	Plasma5-application for interactive graphing and analysis of scientific data
 Name:		labplot
-Version:	2.4.0
-Release:	2
+Version:	2.5.0
+Release:	1
 License:	GPLv2+
 Group:		Sciences/Other
 URL:		https://edu.kde.org/labplot/
-Source0:	http://download.kde.org/stable/%{name}/%{version}/%{name}-%{version}-kf5.tar.xz
+Source0:	http://download.kde.org/stable/%{name}/%{version}/%{name}-%{version}.tar.xz
 BuildRequires:	pkgconfig(gsl)
 BuildRequires:	gettext-devel
 BuildRequires:	shared-mime-info
@@ -42,7 +42,7 @@ data imported from external files.
 Plots can be exported to several pixmap and vector graphic formats.
 
 %prep
-%setup -q -n %{name}-%{version}-kf5
+%setup -q -n %{name}-%{version}
 %apply_patches
 
 %build
