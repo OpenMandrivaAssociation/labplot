@@ -42,7 +42,7 @@ data imported from external files.
 Plots can be exported to several pixmap and vector graphic formats.
 
 %prep
-%setup -q -n %{name}-%{version}-kf5
+%setup -q -n %{name}-%{version}
 %apply_patches
 
 %build
