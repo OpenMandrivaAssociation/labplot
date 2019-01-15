@@ -25,13 +25,16 @@ BuildRequires:	cmake(KF5TextWidgets)
 BuildRequires:	cmake(KF5WidgetsAddons)
 BuildRequires:	cmake(KF5XmlGui)
 BuildRequires:	cmake(KF5KDELibs4Support)
+BuildRequires:  cmake(KF5SyntaxHighlighting)
 
 BuildRequires:	pkgconfig(Qt5Concurrent)
 BuildRequires:	pkgconfig(Qt5Core)
 BuildRequires:	pkgconfig(Qt5Gui)
 BuildRequires:	pkgconfig(Qt5PrintSupport)
+BuildRequires:  pkgconfig(Qt5SerialPort)
 BuildRequires:  pkgconfig(Qt5Sql)
 BuildRequires:	pkgconfig(Qt5Svg)
+BuildRequires:  pkgconfig(Qt5Test)
 BuildRequires:	pkgconfig(Qt5Widgets)
 
 
