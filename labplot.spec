@@ -49,7 +49,7 @@ Plots can be exported to several pixmap and vector graphic formats.
 
 %prep
 %setup -q -n %{name}-%{version}
-%apply_patches
+%autopatch -p1
 
 %build
 %cmake_kde5
