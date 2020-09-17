@@ -45,6 +45,7 @@ BuildRequires:	pkgconfig(zlib)
 BuildRequires:	pkgconfig(liblz4)
 BuildRequires:	hdf5-devel
 BuildRequires:	pkgconfig(poppler-qt5)
+BuildRequires:	pkgconfig(libspectre)
 
 %description
 LabPlot provides an easy way to create, manage and edit plots.
