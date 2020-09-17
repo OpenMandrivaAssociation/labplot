@@ -27,6 +27,8 @@ BuildRequires:	cmake(KF5WidgetsAddons)
 BuildRequires:	cmake(KF5XmlGui)
 BuildRequires:	cmake(KF5KDELibs4Support)
 BuildRequires:	cmake(KF5SyntaxHighlighting)
+BuildRequires:	cmake(KUserFeedback)
+BuildRequires:	cmake(Cantor)
 BuildRequires:	pkgconfig(Qt5Concurrent)
 BuildRequires:	pkgconfig(Qt5Core)
 BuildRequires:	pkgconfig(Qt5Gui)
@@ -37,6 +39,11 @@ BuildRequires:	pkgconfig(Qt5Svg)
 BuildRequires:	pkgconfig(Qt5Test)
 BuildRequires:	pkgconfig(Qt5Widgets)
 BuildRequires:	pkgconfig(cfitsio)
+BuildRequires:	pkgconfig(fftw3)
+BuildRequires:	pkgconfig(netcdf)
+BuildRequires:	pkgconfig(zlib)
+BuildRequires:	pkgconfig(liblz4)
+BuildRequires:	hdf5-devel
 
 %description
 LabPlot provides an easy way to create, manage and edit plots.
