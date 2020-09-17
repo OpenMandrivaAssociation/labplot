@@ -1,12 +1,12 @@
 Summary:	Plasma5-application for interactive graphing and analysis of scientific data
 Name:		labplot
-Version:	2.5.0
+Version:	2.8.0
 Release:	1
 License:	GPLv2+
 Group:		Sciences/Other
 URL:		https://edu.kde.org/labplot/
 Source0:	http://download.kde.org/stable/%{name}/%{version}/%{name}-%{version}.tar.xz
-BuildRequires:  bison
+BuildRequires:	bison
 BuildRequires:	pkgconfig(gsl)
 BuildRequires:	gettext-devel
 BuildRequires:	shared-mime-info
@@ -26,19 +26,16 @@ BuildRequires:	cmake(KF5TextWidgets)
 BuildRequires:	cmake(KF5WidgetsAddons)
 BuildRequires:	cmake(KF5XmlGui)
 BuildRequires:	cmake(KF5KDELibs4Support)
-BuildRequires:  cmake(KF5SyntaxHighlighting)
-
+BuildRequires:	cmake(KF5SyntaxHighlighting)
 BuildRequires:	pkgconfig(Qt5Concurrent)
 BuildRequires:	pkgconfig(Qt5Core)
 BuildRequires:	pkgconfig(Qt5Gui)
 BuildRequires:	pkgconfig(Qt5PrintSupport)
-BuildRequires:  pkgconfig(Qt5SerialPort)
-BuildRequires:  pkgconfig(Qt5Sql)
+BuildRequires:	pkgconfig(Qt5SerialPort)
+BuildRequires:	pkgconfig(Qt5Sql)
 BuildRequires:	pkgconfig(Qt5Svg)
-BuildRequires:  pkgconfig(Qt5Test)
+BuildRequires:	pkgconfig(Qt5Test)
 BuildRequires:	pkgconfig(Qt5Widgets)
-
-
 BuildRequires:	pkgconfig(cfitsio)
 
 %description
@@ -48,8 +45,7 @@ data imported from external files.
 Plots can be exported to several pixmap and vector graphic formats.
 
 %prep
-%setup -q -n %{name}-%{version}
-%autopatch -p1
+%autosetup -p1
 
 %build
 %cmake_kde5
@@ -70,4 +66,3 @@ Plots can be exported to several pixmap and vector graphic formats.
 %{_kde5_applicationsdir}/org.kde.labplot2.desktop
 %{_kde5_datadir}/kxmlgui5/labplot2/
 %{_kde5_datadir}/mime/packages/labplot2.xml
-
