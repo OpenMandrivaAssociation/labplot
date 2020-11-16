@@ -66,8 +66,7 @@ Plots can be exported to several pixmap and vector graphic formats.
 %find_lang labplot2 --with-html
 
 %files -f labplot2.lang
-%doc AUTHORS ChangeLog README
-%{_kde5_sysconfdir}/xdg/labplot2_themes.knsrc
+%doc AUTHORS ChangeLog
 %{_kde5_bindir}/labplot2
 %{_kde5_datadir}/metainfo/org.kde.labplot2.appdata.xml
 %{_kde5_iconsdir}/*
