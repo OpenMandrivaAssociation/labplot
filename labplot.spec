@@ -1,7 +1,7 @@
 Summary:	Plasma5-application for interactive graphing and analysis of scientific data
 Name:		labplot
-Version:	2.8.2
-Release:	2
+Version:	2.9.0
+Release:	1
 License:	GPLv2+
 Group:		Sciences/Other
 URL:		https://edu.kde.org/labplot/
@@ -46,6 +46,7 @@ BuildRequires:	pkgconfig(liblz4)
 BuildRequires:	hdf5-devel
 BuildRequires:	pkgconfig(poppler-qt5)
 BuildRequires:	pkgconfig(libspectre)
+BuildRequires:	readstat-devel
 
 %description
 LabPlot provides an easy way to create, manage and edit plots.
@@ -55,10 +56,10 @@ Plots can be exported to several pixmap and vector graphic formats.
 
 %prep
 %autosetup -p1
+%cmake_kde5
 
 %build
-%cmake_kde5
-%ninja
+%ninja_build -C build
 
 %install
 %ninja_install -C build
