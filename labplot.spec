@@ -43,6 +43,7 @@ BuildRequires:	pkgconfig(fftw3)
 BuildRequires:	pkgconfig(netcdf)
 BuildRequires:	pkgconfig(zlib)
 BuildRequires:	pkgconfig(liblz4)
+BuildRequires:	pkgconfig(libcurl)
 BuildRequires:	hdf5-devel
 BuildRequires:	pkgconfig(poppler-qt5)
 BuildRequires:	pkgconfig(libspectre)
