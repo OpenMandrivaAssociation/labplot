@@ -57,7 +57,9 @@ Plots can be exported to several pixmap and vector graphic formats.
 
 %prep
 %autosetup -p1
-%cmake_kde5
+%cmake_kde5 \
+	-DENABLE_REPRODUCIBLE:BOOL=ON \
+	-DENABLE_VECTOR_BLF:BOOL=OFF
 
 %build
 %ninja_build -C build
