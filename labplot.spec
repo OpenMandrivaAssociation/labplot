@@ -68,6 +68,9 @@ Plots can be exported to several pixmap and vector graphic formats.
 %install
 %ninja_install -C build
 
+# We dont want right now devel files
+rm -rf %{buildroot}%{_includedir}/labplot/
+
 %find_lang labplot2 --with-html
 
 %files -f labplot2.lang
@@ -78,5 +81,6 @@ Plots can be exported to several pixmap and vector graphic formats.
 %{_kde5_datadir}/labplot2/
 %{_kde5_applicationsdir}/org.kde.labplot2.desktop
 %{_kde5_datadir}/mime/packages/labplot2.xml
+%{_libdir}/liblabplot.so
 %{_mandir}/*/man1/labplot*.*
 %{_mandir}/man1/labplot*.*
