@@ -77,7 +77,6 @@ Plots can be exported to several pixmap and vector graphic formats.
 %{_kde5_iconsdir}/*
 %{_kde5_datadir}/labplot2/
 %{_kde5_applicationsdir}/org.kde.labplot2.desktop
-%{_kde5_datadir}/kxmlgui5/labplot2/
 %{_kde5_datadir}/mime/packages/labplot2.xml
 %{_mandir}/*/man1/labplot*.*
 %{_mandir}/man1/labplot*.*
