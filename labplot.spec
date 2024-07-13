@@ -47,6 +47,7 @@ BuildRequires:	pkgconfig(libcurl)
 BuildRequires:	hdf5-devel
 BuildRequires:	pkgconfig(poppler-qt5)
 BuildRequires:	pkgconfig(libspectre)
+BuildRequires:	pkgconfig(libmarkdown)
 BuildRequires:	readstat-devel
 
 %description
