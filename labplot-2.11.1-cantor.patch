@@ -1,0 +1,457 @@
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -268,12 +268,7 @@ add_definitions (-DGIT_COMMIT=\"${GIT_CO
+ 
+ 
+ ### Options ######################################
+-# Cantor does not support Qt6 yet
+-if (QT_MAJOR_VERSION GREATER_EQUAL 6)
+-	option(ENABLE_CANTOR "Build with Cantor support" OFF)
+-else ()
+-	option(ENABLE_CANTOR "Build with Cantor support" ON)
+-endif ()
++option(ENABLE_CANTOR "Build with Cantor support" ON)
+ option(ENABLE_FFTW "Build with FFTW support" ON)
+ option(ENABLE_HDF5 "Build with HDF5 support" ON)
+ option(ENABLE_NETCDF "Build with NetCDF support" ON)
+@@ -352,20 +347,10 @@ ENDIF ()
+ 
+ ### Cantorlibs (optional) ###############################
+ IF (ENABLE_CANTOR)
+-	FIND_PACKAGE (Cantor)
++	find_package(Cantor "24.11.70")
+ 
+ 	IF (Cantor_FOUND)
+ 		MESSAGE (STATUS "Found Cantor Library ${Cantor_VERSION}")
+-
+-		IF (${Cantor_VERSION} VERSION_GREATER "19.11")
+-			add_definitions (-DHAVE_CANTOR_LIBS)
+-			set(RECENT_CANTOR TRUE)
+-		ELSE ()
+-			MESSAGE (STATUS "Cantor Library ${Cantor_VERSION} TOO OLD. Minimum usable version is 19.12")
+-		ENDIF ()
+-		IF (${Cantor_VERSION} VERSION_GREATER "20.08.9")
+-			add_definitions (-DHAVE_NEW_CANTOR_LIBS)
+-		ENDIF ()
+ 	ELSE ()
+ 		MESSAGE (STATUS "Cantor Library NOT FOUND")
+ 	ENDIF ()
+--- a/src/3rdparty/cantor/cantor_part.h
++++ b/src/3rdparty/cantor/cantor_part.h
+@@ -8,20 +8,21 @@
+ #define CANTORPART_H
+ 
+ #include <QPointer>
++#include <QRegularExpression>
++#include <QVector>
+ 
+ #include <KParts/ReadWritePart>
+-#include <cantor/session.h>
++#include "cantor/session.h"
+ 
+ class QWidget;
+ class Worksheet;
+ class WorksheetView;
+-class SarchBar;
+ class SearchBar;
+ class ScriptEditorWidget;
+ class KAboutData;
+ class QAction;
+ class KToggleAction;
+-class KProgressDialog;
++class KSelectAction;
+ 
+ namespace Cantor {
+     class PanelPluginHandler;
+@@ -41,7 +41,7 @@ public:
+     /**
+      * Default constructor
+      */
+-    CantorPart(QWidget *parentWidget,QObject *parent, const QVariantList &args);
++    CantorPart(QObject *parent, const QVariantList &args);
+ 
+     /**
+      * Destructor
+@@ -53,20 +53,30 @@ public:
+      * A shell will use this to inform this Part if it should act
+      * read-only
+      */
+-    void setReadWrite(bool rw) override;
++    void setReadWrite(bool) override;
+ 
+     /**
+      * Reimplemented to disable and enable Save action
+      */
+-    void setModified(bool modified) override;
++    void setModified(bool) override;
+ 
+     KAboutData& createAboutData();
+ 
+     Worksheet* worksheet();
+ 
+ Q_SIGNALS:
+-    void setCaption(const QString& caption);
+-    void showHelp(const QString& help);
++    void setCaption(const QString& caption, const QIcon& icon);
++    void showHelp(const QString&);
++    void hierarchyChanged(QStringList, QStringList, QList<int>);
++    void hierarhyEntryNameChange(QString name, QString searchName, int depth);
++    void worksheetSave(const QUrl&);
++    void setBackendName(const QString&);
++    void requestScrollToHierarchyEntry(QString);
++    void settingsChanges();
++    void requestDocumentation(const QString& keyword);
++
++public Q_SLOTS:
++    void updateCaption();
+ 
+ protected:
+     /**
+@@ -83,38 +93,41 @@ protected:
+      * Called when this part becomes the active one,
+      * or if it looses activity
+      **/
+-    void guiActivateEvent( KParts::GUIActivateEvent * event ) override;
+-
++    void guiActivateEvent(KParts::GUIActivateEvent*) override;
+ 
+     void loadAssistants();
+     void adjustGuiToSession();
+ 
++    void setReadOnly();
++
+ protected Q_SLOTS:
+     void fileSaveAs();
+     void fileSavePlain();
++    void exportToPDF();
+     void exportToLatex();
+     void evaluateOrInterrupt();
+     void restartBackend();
+-    void enableTypesetting(bool enable);
++    void zoomValueEdited(const QString&);
++    void updateZoomWidgetValue(double);
++    void enableTypesetting(bool);
+     void showBackendHelp();
+     void print();
+     void printPreview();
+ 
+-    void worksheetStatusChanged(Cantor::Session::Status stauts);
+-    void showSessionError(const QString& error);
+-    void worksheetSessionChanged();
++    void worksheetStatusChanged(Cantor::Session::Status);
++    void showSessionError(const QString&);
++    void worksheetSessionLoginStarted();
++    void worksheetSessionLoginDone();
+     void initialized();
+-    void updateCaption();
+ 
+-    void pluginsChanged();
+-    void runCommand(const QString& value);
++    void runCommand(const QString&);
+ 
+     void runAssistant();
+     void publishWorksheet();
+ 
+-    void showScriptEditor(bool show);
++    void showScriptEditor(bool);
+     void scriptEditorClosed();
+-    void runScript(const QString& file);
++    void runScript(const QString&);
+ 
+     void showSearchBar();
+     void showExtendedSearchBar();
+@@ -125,39 +138,47 @@ protected Q_SLOTS:
+     /** sets the status message, or cached it, if the StatusBar is blocked.
+      *  Use this method instead of "emit setStatusBarText"
+      */
+-    void setStatusMessage(const QString& message);
++    void setStatusMessage(const QString&);
+     /** Shows an important status message. It makes sure the message is displayed,
+      *  by blocking the statusbarText for 3 seconds
+      */
+-    void showImportantStatusMessage(const QString& message);
++    void showImportantStatusMessage(const QString&);
+     /** Blocks the StatusBar for new messages, so the currently shown one won't be overridden
+      */
+     void blockStatusBar();
+     /** Removes the block from the StatusBar, and shows the last one of the StatusMessages that
+-        where set during the block
+-    **/
++     *        where set during the block
++     **/
+     void unblockStatusBar();
++
+ private:
+-    Worksheet *m_worksheet;
+-    WorksheetView *m_worksheetview;
+-    SearchBar *m_searchBar;
++    Worksheet* m_worksheet{nullptr};
++    WorksheetView* m_worksheetview{nullptr};
++    SearchBar* m_searchBar{nullptr};
+     QPointer<ScriptEditorWidget> m_scriptEditor;
+-    Cantor::PanelPluginHandler* m_panelHandler;
+ 
+-    KProgressDialog* m_initProgressDlg;
+-    QAction * m_evaluate;
+-    QAction * m_save;
+-    QAction * m_findNext;
+-    QAction * m_findPrev;
++    QAction* m_evaluate;
++    QAction* m_restart;
++    KSelectAction* m_zoom;
++    QAction* m_currectZoomAction{nullptr};
++    QAction* m_save;
++    QAction* m_findNext;
++    QAction* m_findPrev;
+     KToggleAction* m_typeset;
+     KToggleAction* m_highlight;
+     KToggleAction* m_completion;
+     KToggleAction* m_exprNumbering;
+     KToggleAction* m_animateWorksheet;
+-    QAction * m_showBackendHelp;
++    KToggleAction* m_embeddedMath;
++    QVector<QAction*> m_editActions;
+ 
+     QString m_cachedStatusMessage;
+-    bool m_statusBarBlocked;
++    bool m_statusBarBlocked{false};
++    unsigned int m_sessionStatusCounter{0};
++    const QRegularExpression m_zoomRegexp{QLatin1String("(?:%?(\\d+(?:\\.\\d+)?)(?:%|\\s*))")};
++
++private Q_SLOTS:
++    void documentationRequested(const QString&);
+ };
+ 
+ #endif // CANTORPART_H
+diff --git a/src/3rdparty/cantor/panelplugin.h b/src/3rdparty/cantor/panelplugin.h
+index ffc67fd966..e904d13253 100644
+--- a/src/3rdparty/cantor/panelplugin.h
++++ b/src/3rdparty/cantor/panelplugin.h
+@@ -1,37 +1,40 @@
+ /*
+-    SPDX-License-Identifier: GPL-2.0-or-later
+-
+-    SPDX-FileCopyrightText: 2010 Alexander Rieder <alexanderrieder@gmail.com>
+-*/
++ *    SPDX-License-Identifier: GPL-2.0-or-later
++ *    SPDX-FileCopyrightText: 2010 Alexander Rieder <alexanderrieder@gmail.com>
++ */
+ 
+ #ifndef _PANEL_PLUGIN_H
+ #define _PANEL_PLUGIN_H
+ 
+-#include <KXMLGUIClient>
+ #include <QObject>
+-#include <KService/KPluginInfo>
++class KPluginMetaData;
+ 
+-#include <cantor/backend.h>
++#include "cantor/backend.h"
+ 
+-#include <cantor/cantor_export.h>
++#include "cantor/cantor_export.h"
+ 
+-namespace Cantor
+-{
+-class Session;
+-class PanelPluginPrivate;
++namespace Cantor {
++  class Session;
++  class PanelPluginPrivate;
+ 
+-/**
+- * A plugin provides some additional features for the worksheet
+- */
+-class CANTOR_EXPORT PanelPlugin : public QObject /*, public KXMLGUIClient*/
+-{
+-  Q_OBJECT
++  /**
++   * A plugin provides some additional features for the worksheet
++   */
++  class CANTOR_EXPORT PanelPlugin : public QObject
++  {
++    Q_OBJECT
+   public:
++    struct State {
++      Session* session{nullptr};
++      QVector<QVariant> inners;
++    };
++
++
+     /**
+      * Create a new PanelPlugin
+      * @param parent the parent Object @see QObject
+      **/
+-    explicit PanelPlugin( QObject* parent );
++    PanelPlugin( QObject* parent );
+     /**
+      * Destructor
+      */
+@@ -39,17 +42,17 @@ class CANTOR_EXPORT PanelPlugin : public QObject /*, public KXMLGUIClient*/
+ 
+     /**
+      * Sets the properties of this PanelPlugin
+-     * according to KPluginInfo
+-     * @param info KPluginInfo
++     * according to KPluginMetaData
++     * @param info KPluginMetaData
+      */
+-    void setPluginInfo(KPluginInfo info);
++    void setPluginInfo(const KPluginMetaData&);
+ 
+     /**
+      * Returns a list of all extensions, the current backend
+      * must provide to make this PanelPlugin work. If it doesn't
+      * this PanelPlugin won't be enabled
+      * @return list of required extensions
+-    */
++     */
+     QStringList requiredExtensions();
+ 
+ 
+@@ -58,7 +61,7 @@ class CANTOR_EXPORT PanelPlugin : public QObject /*, public KXMLGUIClient*/
+      * must provide to make this PanelPlugin work. If it doesn't
+      * this PanelPlugin won't be enabled
+      * @return the required capabilities
+-    */
++     */
+     virtual Backend::Capabilities requiredCapabilities();
+ 
+ 
+@@ -78,25 +81,38 @@ class CANTOR_EXPORT PanelPlugin : public QObject /*, public KXMLGUIClient*/
+     QWidget* parentWidget();
+ 
+     /**
+-     * sets the session this plugin operates on
++     * Save state of panel to storable form
++     *
+      **/
+-    void setSession(Session* session);
++    virtual State saveState();
+ 
+     /**
+-     * returns the session
++     * Restore state
++     * Can contains only session - this is init state from Cantor shell
+      */
++    virtual void restoreState(const State& state);
++
++    /**
++     * For proper connection to Cantor shell. All connections should be done here
++     */
++    virtual void connectToShell(QObject* cantorShell);
++
++    /**
++     * Show on worksheet startup or not
++     * Default returns true
++     */
++    virtual bool showOnStartup();
++
++  protected:
+     Session* session();
+ 
+   Q_SIGNALS:
+     void requestRunCommand(const QString& cmd);
+     void visibilityRequested();
+ 
+-  protected:
+-    virtual void onSessionChanged();
+-
+   private:
+     PanelPluginPrivate* d;
+-};
++  };
+ 
+ }
+ 
+diff --git a/src/3rdparty/cantor/panelpluginhandler.h b/src/3rdparty/cantor/panelpluginhandler.h
+index 82c2e7cee4..0cde00a1e3 100644
+--- a/src/3rdparty/cantor/panelpluginhandler.h
++++ b/src/3rdparty/cantor/panelpluginhandler.h
+@@ -1,50 +1,44 @@
+ /*
+-    SPDX-License-Identifier: GPL-2.0-or-later
+-
+-    SPDX-FileCopyrightText: 2010 Alexander Rieder <alexanderrieder@gmail.com>
+-*/
++ *    SPDX-License-Identifier: GPL-2.0-or-later
++ *    SPDX-FileCopyrightText: 2010 Alexander Rieder <alexanderrieder@gmail.com>
++ */
+ 
+ #ifndef _PANELPLUGINHANDLER_H
+ #define _PANELPLUGINHANDLER_H
+ 
+ #include <QObject>
+-#include <cantor/cantor_export.h>
++#include "panelplugin.h"
++#include "cantor_export.h"
+ 
+ namespace Cantor
+ {
+-class PanelPluginHandlerPrivate;
+-class PanelPlugin;
+-class Session;
+-
+-/**
+- * Simple interface that exports a list of known PanelPlugins.
+- * Needed as the Panel must be handled by the Shell while plugins
+- * belong to the Part.
+- */
++  class PanelPluginHandlerPrivate;
++  class Session;
+ 
+-class CANTOR_EXPORT PanelPluginHandler : public QObject
+-{
+-  Q_OBJECT
++  /**
++   * Simple interface that exports a list of known PanelPlugins.
++   * Needed as the Panel must be handled by the Shell
++   */
++
++  class CANTOR_EXPORT PanelPluginHandler : public QObject
++  {
++    Q_OBJECT
+   public:
+     explicit PanelPluginHandler(QObject* parent);
+     ~PanelPluginHandler() override;
+ 
+-    QList<PanelPlugin*> plugins();
+-
+-    void addPlugin(PanelPlugin* plugin);
++    QList<PanelPlugin*> allPlugins();
++    QList<PanelPlugin*> plugins(Session*);
+ 
+-    void setSession(Session* session);
++    using PanelStates = QMap<QString, Cantor::PanelPlugin::State>;
++    QList<PanelPlugin*> activePluginsForSession(Session*, const PanelStates&);
+ 
+-  Q_SIGNALS:
+-    void pluginsChanged();
+-
+-  private:
+     void loadPlugins();
+ 
+   private:
+     PanelPluginHandlerPrivate* d;
+ 
+-};
++  };
+ 
+ }
+ 
+diff --git a/src/backend/cantorWorksheet/CantorWorksheet.cpp b/src/backend/cantorWorksheet/CantorWorksheet.cpp
+index 9b1be3c119..2089e908bc 100644
+--- a/src/backend/cantorWorksheet/CantorWorksheet.cpp
++++ b/src/backend/cantorWorksheet/CantorWorksheet.cpp
+@@ -77,7 +77,7 @@ CantorWorksheet::CantorWorksheet(const QString& name, bool loading)
+ 		m_part = factory->create<KParts::ReadWritePart>(this, QVariantList() << m_backendName << QLatin1String("--noprogress"));
+ 
+ #else
+-	const auto result = KPluginFactory::instantiatePlugin<KParts::ReadWritePart>(KPluginMetaData(QStringLiteral("kf5/parts/cantorpart")),
++	const auto result = KPluginFactory::instantiatePlugin<KParts::ReadWritePart>(KPluginMetaData(QStringLiteral("kf6/parts/cantorpart")),
+ 																				 this,
+ 																				 QVariantList() << m_backendName << QLatin1String("--noprogress"));
+ 
+diff --git a/src/kdefrontend/SettingsNotebookPage.cpp b/src/kdefrontend/SettingsNotebookPage.cpp
+index 791d54bcf2..42f92a0ff0 100644
+
