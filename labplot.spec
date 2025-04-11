@@ -1,10 +1,10 @@
 Summary:	Plasma5-application for interactive graphing and analysis of scientific data
 Name:		labplot
 Version:	2.11.1
-Release:	1
+Release:	2
 License:	GPLv2+
 Group:		Sciences/Other
-URL:		https://edu.kde.org/labplot/
+URL:		https://apps.kde.org/labplot/
 Source0:	http://download.kde.org/stable/%{name}/%{name}-%{version}.tar.xz
 BuildRequires:	bison
 BuildRequires:	pkgconfig(gsl)
@@ -12,43 +12,51 @@ BuildRequires:	gettext-devel
 BuildRequires:	shared-mime-info
 BuildRequires:	docbook-dtd42-xml
 BuildRequires:	cmake(ECM)
-BuildRequires:	cmake(KF5Archive)
-BuildRequires:	cmake(KF5Completion)
-BuildRequires:	cmake(KF5Config)
-BuildRequires:	cmake(KF5ConfigWidgets)
-BuildRequires:	cmake(KF5CoreAddons)
-BuildRequires:	cmake(KF5DocTools)
-BuildRequires:	cmake(KF5IconThemes)
-BuildRequires:	cmake(KF5I18n)
-BuildRequires:	cmake(KF5KIO)
-BuildRequires:	cmake(KF5NewStuff)
-BuildRequires:	cmake(KF5TextWidgets)
-BuildRequires:	cmake(KF5WidgetsAddons)
-BuildRequires:	cmake(KF5XmlGui)
-BuildRequires:	cmake(KF5KDELibs4Support)
-BuildRequires:	cmake(KF5SyntaxHighlighting)
-BuildRequires:	cmake(KUserFeedback)
+BuildRequires:	cmake(KF6Archive)
+BuildRequires:	cmake(KF6Completion)
+BuildRequires:	cmake(KF6Config)
+BuildRequires:	cmake(KF6ConfigWidgets)
+BuildRequires:	cmake(KF6CoreAddons)
+BuildRequires:	cmake(KF6DocTools)
+BuildRequires:	cmake(KF6IconThemes)
+BuildRequires:	cmake(KF6I18n)
+BuildRequires:	cmake(KF6KIO)
+BuildRequires:	cmake(KF6NewStuff)
+BuildRequires:	cmake(KF6Purpose)
+BuildRequires:	cmake(KF6TextWidgets)
+BuildRequires:	cmake(KF6WidgetsAddons)
+BuildRequires:	cmake(KF6XmlGui)
+#BuildRequires:	cmake(KF6KDELibs4Support)
+BuildRequires:	cmake(KF6SyntaxHighlighting)
+BuildRequires:	cmake(KUserFeedbackQt6)
+BuildRequires:	cmake(QXlsxQt6)
 BuildRequires:	cmake(Cantor)
-BuildRequires:	pkgconfig(Qt5Concurrent)
-BuildRequires:	pkgconfig(Qt5Core)
-BuildRequires:	pkgconfig(Qt5Gui)
-BuildRequires:	pkgconfig(Qt5PrintSupport)
-BuildRequires:	pkgconfig(Qt5SerialPort)
-BuildRequires:	pkgconfig(Qt5Sql)
-BuildRequires:	pkgconfig(Qt5Svg)
-BuildRequires:	pkgconfig(Qt5Test)
-BuildRequires:	pkgconfig(Qt5Widgets)
+BuildRequires:	pkgconfig(Qt6Concurrent)
+BuildRequires:	pkgconfig(Qt6Core)
+BuildRequires:	pkgconfig(Qt6Gui)
+BuildRequires:	pkgconfig(Qt6PrintSupport)
+BuildRequires:	pkgconfig(Qt6SerialPort)
+BuildRequires:	pkgconfig(Qt6Sql)
+BuildRequires:	pkgconfig(Qt6Svg)
+BuildRequires:	pkgconfig(Qt6Test)
+BuildRequires:	pkgconfig(Qt6Widgets)
 BuildRequires:	pkgconfig(cfitsio)
 BuildRequires:	pkgconfig(fftw3)
+BuildRequires:	pkgconfig(matio)
 BuildRequires:	pkgconfig(netcdf)
 BuildRequires:	pkgconfig(zlib)
 BuildRequires:	pkgconfig(liblz4)
 BuildRequires:	pkgconfig(libcurl)
 BuildRequires:	hdf5-devel
-BuildRequires:	pkgconfig(poppler-qt5)
+BuildRequires:	pkgconfig(poppler-qt6)
 BuildRequires:	pkgconfig(libspectre)
 BuildRequires:	pkgconfig(libmarkdown)
+BuildRequires:	pkgconfig(liborcus-0.18)
 BuildRequires:	readstat-devel
+
+%patchlist
+# cantor
+labplot-2.11.1-cantor.patch
 
 %description
 LabPlot provides an easy way to create, manage and edit plots.
@@ -58,9 +66,11 @@ Plots can be exported to several pixmap and vector graphic formats.
 
 %prep
 %autosetup -p1
-%cmake_kde5 \
+%cmake  -Wno-dev \
+	-DENABLE_CANTOR:BOOL=ON \
 	-DENABLE_REPRODUCIBLE:BOOL=ON \
-	-DENABLE_VECTOR_BLF:BOOL=OFF
+	-DENABLE_VECTOR_BLF:BOOL=OFF \
+	-GNinja
 
 %build
 %ninja_build -C build
