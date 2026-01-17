@@ -1,7 +1,7 @@
 Summary:	Plasma5-application for interactive graphing and analysis of scientific data
 Name:		labplot
-Version:	2.11.1
-Release:	2
+Version:	2.12.1
+Release:	1
 License:	GPLv2+
 Group:		Sciences/Other
 URL:		https://apps.kde.org/labplot/
