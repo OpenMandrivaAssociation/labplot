@@ -51,7 +51,7 @@ BuildRequires:	hdf5-devel
 BuildRequires:	pkgconfig(poppler-qt6)
 BuildRequires:	pkgconfig(libspectre)
 BuildRequires:	pkgconfig(libmarkdown)
-BuildRequires:	pkgconfig(liborcus-0.18)
+BuildRequires:	pkgconfig(liborcus-0.21)
 BuildRequires:	readstat-devel
 
 %patchlist
