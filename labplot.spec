@@ -54,9 +54,9 @@ BuildRequires:	pkgconfig(libmarkdown)
 BuildRequires:	pkgconfig(liborcus-0.21)
 BuildRequires:	readstat-devel
 
-%patchlist
+#patchlist
 # cantor
-labplot-2.11.1-cantor.patch
+#labplot-2.11.1-cantor.patch
 
 %description
 LabPlot provides an easy way to create, manage and edit plots.
@@ -66,11 +66,11 @@ Plots can be exported to several pixmap and vector graphic formats.
 
 %prep
 %autosetup -p1
-%cmake  -Wno-dev \
-	-DENABLE_CANTOR:BOOL=ON \
-	-DENABLE_REPRODUCIBLE:BOOL=ON \
-	-DENABLE_VECTOR_BLF:BOOL=OFF \
-	-GNinja
+#cmake  -Wno-dev \
+#	-DENABLE_CANTOR:BOOL=ON \
+#	-DENABLE_REPRODUCIBLE:BOOL=ON \
+#	-DENABLE_VECTOR_BLF:BOOL=OFF \
+#	-GNinja
 
 %build
 %ninja_build -C build
