@@ -3,7 +3,7 @@
 Summary:        LabPlot is a FREE, open source and cross-platform Data Visualization and Analysis software accessible to everyone
 Name:		labplot
 Version:	2.12.1
-Release:	1
+Release:	2
 License:	GPLv2+
 Group:		Sciences/Other
 URL:		https://apps.kde.org/labplot/
@@ -17,6 +17,7 @@ BuildRequires:	gettext-devel
 BuildRequires:	shared-mime-info
 BuildRequires:	docbook-dtd42-xml
 BuildRequires:	cmake(ECM)
+BuildRequires:  cmake(KF6)
 BuildRequires:	cmake(KF6Archive)
 BuildRequires:	cmake(KF6Completion)
 BuildRequires:	cmake(KF6Config)
@@ -36,6 +37,7 @@ BuildRequires:	cmake(KF6SyntaxHighlighting)
 BuildRequires:	cmake(KUserFeedbackQt6)
 BuildRequires:	cmake(QXlsxQt6)
 BuildRequires:	cmake(Cantor)
+BuildRequires:  cmake(VulkanHeaders)
 BuildRequires:	pkgconfig(Qt6Concurrent)
 BuildRequires:	pkgconfig(Qt6Core)
 BuildRequires:	pkgconfig(Qt6Gui)
