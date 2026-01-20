@@ -63,6 +63,15 @@ BuildRequires:	readstat-devel
 BuildRequires:  pkgconfig(libcerf)
 BuildRequires:  pkgconfig(libixion-0.20)
 BuildRequires:  pkgconfig(eigen3)
+BuildRequires:  pkgconfig(Qt6QmlCore)
+BuildRequires:  pkgconfig(Qt6QmlAssetDownloader)
+BuildRequires:  qt6-qtbase-theme-gtk3
+BuildRequires:  qt6-qtbase-sql-firebird
+BuildRequires:  qt6-qtbase-sql-mariadb
+BuildRequires:  qt6-qtbase-sql-odbc
+BuildRequires:  qt6-qtbase-sql-postgresql
+BuildRequires:  lib64Qt6LabsSynchronizer
+BuildRequires:  lib64Qt6QmlNetwork
 
 BuildSystem:    cmake
 BuildOption:    -DENABLE_REPRODUCIBLE:BOOL=ON
