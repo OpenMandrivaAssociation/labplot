@@ -1,4 +1,6 @@
-Summary:	Plasma5-application for interactive graphing and analysis of scientific data
+%global debug_package %{nil}
+
+Summary:        LabPlot is a FREE, open source and cross-platform Data Visualization and Analysis software accessible to everyone
 Name:		labplot
 Version:	2.12.1
 Release:	1
@@ -6,6 +8,9 @@ License:	GPLv2+
 Group:		Sciences/Other
 URL:		https://apps.kde.org/labplot/
 Source0:	http://download.kde.org/stable/%{name}/%{name}-%{version}.tar.xz
+Patch0:         2.12.1-fix-build-with-Qt-6.10.patch
+Patch1:         2.12.1-add-missing-include.patch
+
 BuildRequires:	bison
 BuildRequires:	pkgconfig(gsl)
 BuildRequires:	gettext-devel
@@ -26,7 +31,7 @@ BuildRequires:	cmake(KF6Purpose)
 BuildRequires:	cmake(KF6TextWidgets)
 BuildRequires:	cmake(KF6WidgetsAddons)
 BuildRequires:	cmake(KF6XmlGui)
-#BuildRequires:	cmake(KF6KDELibs4Support)
+BuildRequires:	cmake(KF6Parts)
 BuildRequires:	cmake(KF6SyntaxHighlighting)
 BuildRequires:	cmake(KUserFeedbackQt6)
 BuildRequires:	cmake(QXlsxQt6)
@@ -53,10 +58,12 @@ BuildRequires:	pkgconfig(libspectre)
 BuildRequires:	pkgconfig(libmarkdown)
 BuildRequires:	pkgconfig(liborcus-0.21)
 BuildRequires:	readstat-devel
+BuildRequires:  pkgconfig(libcerf)
+BuildRequires:  pkgconfig(libixion-0.20)
+BuildRequires:  pkgconfig(eigen3)
 
-#patchlist
-# cantor
-#labplot-2.11.1-cantor.patch
+BuildSystem:    cmake
+BuildOption:    -DENABLE_REPRODUCIBLE:BOOL=ON
 
 %description
 LabPlot provides an easy way to create, manage and edit plots.
@@ -64,33 +71,19 @@ It allows you to produce plots based on data from a spreadsheet or on
 data imported from external files.
 Plots can be exported to several pixmap and vector graphic formats.
 
-%prep
-%autosetup -p1
-#cmake  -Wno-dev \
-#	-DENABLE_CANTOR:BOOL=ON \
-#	-DENABLE_REPRODUCIBLE:BOOL=ON \
-#	-DENABLE_VECTOR_BLF:BOOL=OFF \
-#	-GNinja
 
-%build
-%ninja_build -C build
+%find_lang %{name} --with-html
 
-%install
-%ninja_install -C build
-
-# We dont want right now devel files
-rm -rf %{buildroot}%{_includedir}/labplot/
-
-%find_lang labplot2 --with-html
-
-%files -f labplot2.lang
+%files -f %{name}.lang
 %doc AUTHORS ChangeLog
-%{_kde5_bindir}/labplot2
-%{_kde5_datadir}/metainfo/org.kde.labplot2.appdata.xml
-%{_kde5_iconsdir}/*
-%{_kde5_datadir}/labplot2/
-%{_kde5_applicationsdir}/org.kde.labplot2.desktop
-%{_kde5_datadir}/mime/packages/labplot2.xml
-%{_libdir}/liblabplot.so
-%{_mandir}/*/man1/labplot*.*
-%{_mandir}/man1/labplot*.*
+%license LICENSES/*
+%{_bindir}/%{name}
+%{_datadir}/metainfo/org.kde.%{name}.appdata.xml
+%{_iconsdir}/*
+%{_datadir}/%{name}/
+%{_datadir}/applications/org.kde.%{name}.desktop
+%{_datadir}/mime/packages/%{name}.xml
+%{_libdir}/lib%{name}.so*
+%{_libdir}/cmake/%{name}/LabPlot*
+%{_mandir}/man1/%{name}*.*
+%{_includedir}/%{name}/*
